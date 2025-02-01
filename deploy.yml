@@ -1,0 +1,32 @@
+---
+- name: Deploy Node.js Microservice
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start Docker Service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: akashkoche/nodejs-projects:v1.0
+        souce: pull
+
+    - name: Run Docker Container
+      docker_container:
+        name: nodejs-microservice
+        image: akashkoche/nodejs-projects:v1.0
+        ports:
+          - "80:3000"
+        state: started
